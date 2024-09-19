@@ -1,6 +1,3 @@
-Here's a template for a README file for your project:
-
----
 
 # Wind Speed Map
 
