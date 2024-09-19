@@ -30,7 +30,6 @@ jobs:
           push: true
           tags: |
             wind-speed-map:latest
-            wind-speed-map:${{ github.sha }}
           
       - name: Image digest
         run: echo ${{ steps.build.outputs.digest }}
