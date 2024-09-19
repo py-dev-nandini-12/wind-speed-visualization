@@ -11,6 +11,7 @@ app = Flask(__name__)
 dataset = xr.open_dataset('data/BERYL_test_data.nc 2')
 print(dataset)
 steps = dataset.step.values
+print(steps)
 latitudes = dataset.latitude.values
 longitudes = dataset.longitude.values
 ws_data = dataset.ws.values
