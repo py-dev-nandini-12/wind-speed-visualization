@@ -7,7 +7,7 @@ This project is a web application that visualizes wind speed data using interact
 
 - `main.py`: The main Flask application script.
 - `templates/index.html`: The HTML template for the web application.
-- `static/scripts.js`: JavaScript file for the interactive map.
+- `data/BERYL_test_data.nc 2`: Dataset file
 - `Dockerfile`: Dockerfile for building the Docker image.
 - `requirements.txt`: Python dependencies for the project.
 
