@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wind Speed Visualization</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        #map {
+            height: 600px;
+            width: 100%;
+        }
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            text-align: center;
+            position: relative;
+        }
+        select, input {
+            padding: 5px;
+            margin: 10px;
+        }
+        .info {
+            margin-top: 20px;
+        }
+
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>Wind Speed Visualization</h1>
+        <form method="get" action="/">
+            <label for="step">Select Time Step:</label>
+            <select name="step" id="step" onchange="this.form.submit()">
+                {% for step in steps %}
+                <option value="{{ loop.index0 }}" {% if loop.index0== current_step|int %}selected{% endif %}>{{ step
+                    }}
+                </option>
+                {% endfor %}
+            </select>
+        </form>
+        <form method="post" action="/">
+            <label for="lat">Latitude:</label>
+            <input type="text" name="lat" id="lat" value="{{ lat if lat else '' }}">
+            <label for="lng">Longitude:</label>
+            <input type="text" name="lng" id="lng" value="{{ lng if lng else '' }}">
+            <input type="hidden" name="step" value="{{ current_step }}">
+            <button type="submit">Get Wind Speed</button>
+        </form>
+        <p>Highest Wind Speed: {{ max_ws }} m/s</p>
+        {% if wind_speed is not none %}
+        <p>Wind Speed at ({{ lat }}, {{ lng }}): {{ wind_speed }} m/s</p>
+        {% else %}
+        <p>No wind speed data available for the selected location.</p>
+        {% endif %}
+    </div>
+    <div id="map">{{ map|safe }}</div>
+</div>
+</body>
+</html>
+
+
