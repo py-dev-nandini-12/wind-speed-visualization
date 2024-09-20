@@ -17,7 +17,7 @@ Clicking on the windspeed layer on the map displays the windspeed with the corre
 ### Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/wind-speed-map.git
+git clone https://github.com/your-username/wind-speed-visualization.git
 cd wind-speed-map
 ```
 
@@ -46,13 +46,13 @@ The application will be available at `http://127.0.0.1:5000/`.
 ### Build the Docker Image
 
 ```bash
-docker build -t wind-speed-map .
+docker build -t wind-speed-visualization .
 ```
 
 ### Run the Docker Container
 
 ```bash
-docker run -p 5000:5000 wind-speed-map
+docker run -p 5000:5000 wind-speed-visualization
 ```
 
 The application will be available at `http://127.0.0.1:5000/`.
@@ -74,12 +74,12 @@ The application will be available at `http://127.0.0.1:5000/`.
 2. **Tag the Docker Image:**
 
    ```bash
-   docker tag wind-speed-map your-username/wind-speed-map:latest
+   docker tag wind-speed-map your-username/wind-speed-visualization:latest
    ```
 
 3. **Push the Docker Image:**
 
    ```bash
-   docker push your-username/wind-speed-map:latest
+   docker push your-username/wind-speed-visualization:latest
    ```
 
