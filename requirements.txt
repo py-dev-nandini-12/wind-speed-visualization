@@ -3,4 +3,5 @@ pandas
 folium
 flask
 netcdf4
+numpy
 
