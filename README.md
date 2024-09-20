@@ -18,7 +18,7 @@ Clicking on the windspeed layer on the map displays the windspeed with the corre
 
 ```bash
 git clone https://github.com/your-username/wind-speed-visualization.git
-cd wind-speed-map
+cd wind-speed-visualization
 ```
 
 ### Set Up Python Environment
