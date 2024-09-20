@@ -2,7 +2,7 @@
 # Wind Speed Map
 
 This project is a web application that visualizes wind speed data using interactive maps. The application reads wind speed data from a NetCDF file, processes it, and displays it on a web map using Flask and Docker.
-Clicking on the map displays the windspeed with the corresponding latitude and longitude.
+Clicking on the windspeed layer on the map displays the windspeed with the corresponding latitude and longitude.
 
 ## Project Structure
 
