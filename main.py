@@ -8,10 +8,8 @@ from folium.plugins import HeatMap
 app = Flask(__name__)
 
 # Load the dataset
-dataset = xr.open_dataset('data/BERYL_test_data.nc 2')
-print(dataset)
+dataset = xr.open_dataset('data/BERYL_test_data.nc_2')
 steps = dataset.step.values
-print(steps)
 latitudes = dataset.latitude.values
 longitudes = dataset.longitude.values
 ws_data = dataset.ws.values
@@ -28,79 +26,48 @@ def format_time_steps(steps):
 step_labels = format_time_steps(steps)
 
 
-def create_map(step_index, lat=None, lng=None, wind_speed_value=None):
+def create_map(step_index):
     m = folium.Map(location=[0, 0], zoom_start=2)
     wind_speed = ws_data[step_index]
-    heat_data = [
-        [latitudes[i], longitudes[j], float(wind_speed[i, j])]
-        for i in range(len(latitudes))
-        for j in range(len(longitudes))
-        if not np.isnan(wind_speed[i, j]) and wind_speed[i, j] > 0
-    ]
+
+    heat_data = []
+
+    for lat_idx in range(len(latitudes)):
+        for lng_idx in range(len(longitudes)):
+            if not np.isnan(wind_speed[lat_idx, lng_idx]):
+                lat = latitudes[lat_idx]
+                lon = longitudes[lng_idx]
+                speed = float(wind_speed[lat_idx, lng_idx])
+                heat_data.append([lat, lon, speed])
+                folium.CircleMarker(
+                    location=(lat, lon),
+                    radius=5,
+                    color='yellow' if speed >= 0 else 'red',
+                    fill=True,
+                    fill_color='yellow' if speed >= 0 else 'red',
+                    fill_opacity=0.6,
+                    popup=f'<p>Latitude: {lat}, Longitude: {lon}, Wind Speed: {speed:.2f} m/s</p>'
+                ).add_to(m)
+
     HeatMap(heat_data, min_opacity=0.5, max_opacity=1.0, radius=5).add_to(m)
 
-    if lat and lng:
-        folium.Marker([lat, lng],
-                      popup=f'Wind Speed: {wind_speed_value} m/s' if wind_speed_value is not None else 'No data available').add_to(
-            m)
-
     folium.LatLngPopup().add_to(m)
-    max_ws = np.nanmax(wind_speed)
-    return m, max_ws
+    return m
 
 
-#
-
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/')
 def index():
-    # Get step index from query parameters or default to 0
-    step = request.args.get('step', '0')  # GET method
-    if request.method == 'POST':
-        step = request.form.get('step', step)  # POST method
-
+    step = request.args.get('step', '0')  # Default to first step
     step_index = int(step)
-    lat = request.form.get('lat', None)
-    lng = request.form.get('lng', None)
-    wind_speed_value = None
-
-    # Initialize indices
-    lat_idx = None
-    lon_idx = None
-
-    if lat and lng:
-        try:
-            lat = float(lat)
-            lng = float(lng)
-            lat_idx = np.abs(latitudes - lat).argmin()
-            lon_idx = np.abs(longitudes - lng).argmin()
-            wind_speed_value = ws_data[step_index, lat_idx, lon_idx]
-            if np.isnan(wind_speed_value):
-                wind_speed_value = None
-        except Exception as e:
-            print(f"Error processing latitude and longitude: {e}")
-
-    # Create map and calculate max wind speed
-    m, max_ws = create_map(step_index, lat if lat else None, lng if lng else None, wind_speed_value)
-
-    # Prepare wind speeds for different time steps
-    wind_speeds = {}
-    if lat_idx is not None and lon_idx is not None:
-        for i in range(ws_data.shape[0]):
-            wind_speeds[step_labels[i]] = ws_data[i, lat_idx, lon_idx] if not np.isnan(
-                ws_data[i, lat_idx, lon_idx]) else 'No data'
-    else:
-        wind_speeds = {label: 'No data available' for label in step_labels}
+    m = create_map(step_index)
+    max_ws = np.nanmax(ws_data[step_index])
 
     return render_template(
         'index.html',
         map=m._repr_html_(),
         max_ws=float(max_ws),
         steps=step_labels,
-        current_step=step,
-        wind_speed=wind_speed_value,
-        lat=lat if lat else '',
-        lng=lng if lng else '',
-        wind_speeds=wind_speeds
+        current_step=step
     )
 
 
